@@ -23,20 +23,19 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-cacheSolve <- function(x, ...) {
-    ## This function accepts the list returned by makeCacheMatrix()
-    ## This function then attempts to retrieve the cached inverse of the matrix
+cacheSolve <- function(x, xCache, ...) {
+    ## This function accepts a matrix and the list returned by makeCacheMatrix()
+    ## This function then checks to see if x matches the matrix
     ## originally passed to makeCacheMatrix().
-    ## If that cached inversed exists, it is returned.
-    ## If not, this function solves, caches, and returns the inverse.
+    ## If so, the caches inverse is returned.
+    ## If not, this function updates the cached data and returns the inverse
     
-    i <- x$getinv()
-    if(!is.null(i)) {
+    if(identical(x, xCache$get)) {
         message("retrieving cached inverse")
-        return(i)
+        return(xCache$getinv)
     }
-    data <- x$get()
-    i <- solve(data, ...)
+    xCache$set(x)
+    i <- solve(x, ...)
     x$setinv(i)
     i
 }
